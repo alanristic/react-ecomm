@@ -1,9 +1,13 @@
+/**
+ * Interface btw Firebase and our own app
+ */
 import { initializeApp } from "firebase/app"
 import {
   getAuth,
-  signInWithRedirect,
-  signInWithPopup,
-  GoogleAuthProvider,
+  signInWithRedirect, // Google's redirect sign-in
+  signInWithPopup, // Google's popup sign-in
+  GoogleAuthProvider, // specific provider (Google)
+  createUserWithEmailAndPassword, // email/password sign-in (provider is not needed since it's considered 'native' provider)
 } from "firebase/auth"
 
 import {
@@ -33,7 +37,12 @@ provider.setCustomParameters({
 })
 
 export const auth = getAuth() // it's sigle instance of the auth service (we ever only need one even with multiple providers)
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider)
+
+/**************
+ * PROVIDERS
+ **************/
+export const signInWithGooglePopup = () => signInWithPopup(auth, provider) // popup sign-in with Google
+export const signInWithGoogleRedirect = () => signInWithRedirect(auth, provider) // redirect sign-in with Google
 
 // Let's instantinate Firestore
 const db = getFirestore()
@@ -41,11 +50,11 @@ const db = getFirestore()
 // Let's create a function to create a user profile document when a user signs in with Google
 export const createUserProfileDocument = async (userAuth, additionalData) => {
   const userDocRef = doc(db, "users", userAuth.uid)
-  console.log(userDocRef)
+  //   console.log(userDocRef)
 
   const userDocSnapshot = await getDoc(userDocRef)
-  console.log(userDocSnapshot)
-  console.log(userDocSnapshot.exists())
+  //   console.log(userDocSnapshot)
+  //   console.log(userDocSnapshot.exists())
 
   // If user doesn't exist in the database, create a new user document
   if (!userDocSnapshot.exists()) {
@@ -66,4 +75,27 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 
   // if user exists, return the user document reference
   return userDocRef
+}
+
+/**
+ * Creates a new user with email and password
+ *
+ * @param {string} email - The email of the user
+ * @param {string} password - The password of the user
+ * @returns {Promise<void>} - A promise that resolves when the user is created
+ */
+export const createAuthUserWithEmailAndPassword = async (email, password) => {
+  if (!email || !password) {
+    // if email or password are missing, log an error and return
+    console.error("Email and password are required")
+    return
+  }
+
+  try {
+    // console.log("createAuthUserWithEmailAndPassword: " + email, password)
+    // return
+    return await createUserWithEmailAndPassword(auth, email, password)
+  } catch (error) {
+    console.error("Error signing in with email and password", error.message)
+  }
 }

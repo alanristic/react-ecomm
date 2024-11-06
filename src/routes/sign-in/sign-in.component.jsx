@@ -3,17 +3,29 @@ import {
   createUserProfileDocument,
 } from "../../utils/firebase/firebase.utils"
 
+import SignUpForm from "../../components/sign-up-form/sign-up-form.component"
+
 const SignIn = () => {
-  const logGoogleUser = async () => {
-    const { user } = await signInWithGooglePopup()
-    console.log(user)
-    const userDocRef = await createUserProfileDocument(user)
+  /**
+   * Popup sign-in with Google
+   */
+  const logGoogleUserWithPopup = async () => {
+    try {
+      const { user } = await signInWithGooglePopup() // opens a popup window with Google sign-in
+      const userDocRef = await createUserProfileDocument(user)
+      console.log("User document reference:", userDocRef)
+    } catch (error) {
+      console.error("Error signing in with popup:", error)
+    }
   }
 
   return (
     <div className="sign-in">
       <h2>Sign-in endpoint</h2>
-      <button onClick={logGoogleUser}>Sign-in with Google Popup</button>
+      <button onClick={logGoogleUserWithPopup}>
+        Sign-in with Google Popup
+      </button>
+      <SignUpForm></SignUpForm>
     </div>
   )
 }
