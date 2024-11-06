@@ -4,9 +4,8 @@ import FormInput from "../form-input/form-input.component"
 import Button from "../button/button.component"
 
 import {
-  createUserProfileDocument,
+  // createUserProfileDocument,
   signInWithGooglePopup,
-  createAuthUserWithEmailAndPassword, // our custom method to create a user with email and password
   signInAuthUserWithEmailAndPassword, // our custom method to sign in a user with email and password
 } from "../../utils/firebase/firebase.utils"
 
@@ -33,9 +32,7 @@ const SignInForm = () => {
    */
   const signInWithGoogle = async () => {
     try {
-      const { user } = await signInWithGooglePopup() // opens a popup window with Google sign-in
-      await createUserProfileDocument(user)
-      // console.log("User document reference:", userDocRef)
+      await signInWithGooglePopup() // opens a popup window with Google sign-in
     } catch (error) {
       console.error("Error signing in with popup:", error)
     }

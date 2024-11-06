@@ -59,10 +59,8 @@ const SignUpForm = () => {
     }
 
     try {
-      //TODO:  check if this returns undefined (it should return the user object)
       const { user } = await createAuthUserWithEmailAndPassword(email, password)
-
-      await createUserProfileDocument(user, { displayName })
+      await createUserProfileDocument(user, { displayName }) // create new user (document) in the database
       resetFormFields()
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
