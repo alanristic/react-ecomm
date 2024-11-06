@@ -8,6 +8,7 @@ import {
   signInWithPopup, // Google's popup sign-in
   GoogleAuthProvider, // specific provider (Google)
   createUserWithEmailAndPassword, // email/password sign-in (provider is not needed since it's considered 'native' provider)
+  signInWithEmailAndPassword, // email/password sign-in (provider is not needed since it's considered 'native' provider)
 } from "firebase/auth"
 
 import {
@@ -95,6 +96,22 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
     // console.log("createAuthUserWithEmailAndPassword: " + email, password)
     // return
     return await createUserWithEmailAndPassword(auth, email, password)
+  } catch (error) {
+    console.error("Error signing in with email and password", error.message)
+  }
+}
+
+export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+  if (!email || !password) {
+    // if email or password are missing, log an error and return
+    console.error("Email and password are required")
+    return
+  }
+
+  try {
+    // console.log("createAuthUserWithEmailAndPassword: " + email, password)
+    // return
+    return await signInWithEmailAndPassword(auth, email, password)
   } catch (error) {
     console.error("Error signing in with email and password", error.message)
   }
