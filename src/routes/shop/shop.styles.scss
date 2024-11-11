@@ -1,0 +1,9 @@
+.products-container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); // 4 equal columns
+  grid-gap: 10px; // column gap
+  row-gap: 50px; // rowq gap
+  //   justify-items: center;
+  //   margin-top: 20px;
+}
