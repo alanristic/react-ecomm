@@ -7,24 +7,26 @@ import { CartContext } from "../../utils/contexts/cart.context"
 
 // Components
 import Button from "../button/button.component"
+import CartItem from "../cart-item/cart-item.component"
 
 const CartDropdown = () => {
   // Fetch the products from the context
-  const { products } = useContext(CartContext)
+  const { cartItems } = useContext(CartContext)
 
   //   console.log("DBG: CartDropdown render()", products)
 
   return (
     <div className="cart-dropdown-container">
-      <div className="cart-items" />
-      {/* {products.map((product) => (
-        <div className="cart-items" key={product.id}>
-          <span>{product.name}</span>
-          <span>{product.price}</span>
-          <span>{product.quantity}</span>
-        </div>
-      ))} */}
-      <Button>GO TO CHECKOUT</Button>
+      <div className="cart-items">
+        {cartItems.length ? (
+          cartItems.map((cartItem) => (
+            <CartItem key={cartItem.id} cartItem={cartItem} />
+          ))
+        ) : (
+          <span className="empty-message">Your cart is empty</span>
+        )}
+      </div>
+      <Button to="/">GO TO CHECKOUT</Button>
     </div>
   )
 }
