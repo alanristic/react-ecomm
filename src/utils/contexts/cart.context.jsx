@@ -63,13 +63,28 @@ const removeCartItem = (cartItems, productToRemove) => {
   )
 }
 
+/**
+ * TODO: write jsDoc
+ *
+ * @param {*} cartItems
+ * @param {*} productToRemove
+ * @returns
+ */
+const clearCartItem = (cartItems, productToClear) => {
+  // If we only had 1 product in cart, remove the product from the cart completly
+  return cartItems.filter((cartItem) => cartItem.id !== productToClear.id)
+}
+
 // Export the context
 export const CartContext = createContext({
   isCartOpen: false, // default value
   setIsCartOpen: () => {}, // points to an empty function
   cartItems: [],
   addItemToCart: () => {},
+  removeItemFromCart: () => {},
+  clearItemFromCart: () => {},
   cartCount: 0,
+  cartTotal: 0,
 })
 
 /**
@@ -82,6 +97,7 @@ export const CartProvider = ({ children }) => {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [cartItems, setCartItems] = useState([])
   const [cartCount, setCartCount] = useState(0)
+  const [cartTotal, setCartTotal] = useState(0)
 
   useEffect(() => {
     // Calculate the total number of items in the cart
@@ -90,6 +106,18 @@ export const CartProvider = ({ children }) => {
       0
     )
     setCartCount(newCartCount) // set new cart count
+  }, [cartItems]) // runs every time when the 'cartItems' change
+
+  /**
+   * ReCount Cart Totla
+   */
+  useEffect(() => {
+    // Calculate the total number of items in the cart
+    const newCartTotal = cartItems.reduce(
+      (total, cartItem) => total + cartItem.quantity * cartItem.price,
+      0
+    )
+    setCartTotal(newCartTotal) // set new cart count
   }, [cartItems]) // runs every time when the 'cartItems' change
 
   /**
@@ -102,12 +130,21 @@ export const CartProvider = ({ children }) => {
   }
 
   /**
-   * Remove product from the cart
+   * Remove product (quantitiy) from the cart
    *
    * @param {*} productToRemove
    */
   const removeItemFromCart = (productToRemove) => {
     setCartItems(removeCartItem(cartItems, productToRemove))
+  }
+
+  /**
+   * Remove product from the cart (regardless of quantity)
+   *
+   * @param {*} productToClear
+   */
+  const clearItemFromCart = (productToClear) => {
+    setCartItems(clearCartItem(cartItems, productToClear))
   }
 
   // Exposing the values to the children components
@@ -117,7 +154,9 @@ export const CartProvider = ({ children }) => {
     cartItems,
     addItemToCart,
     removeItemFromCart, // Add removeItemFromCart to the context value
+    clearItemFromCart,
     cartCount,
+    cartTotal,
   }
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
