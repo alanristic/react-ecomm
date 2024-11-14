@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom"
 
 import App from "./App"
 import { UserProvider } from "./utils/contexts/user.context"
-import { ProductsProvider } from "./utils/contexts/products.context"
+import { CategoriesProvider } from "./utils/contexts/categories.context"
 import { CartProvider } from "./utils/contexts/cart.context"
 
 import reportWebVitals from "./reportWebVitals"
@@ -12,7 +12,7 @@ import reportWebVitals from "./reportWebVitals"
 import "./index.scss"
 
 /**
- * NOTE 01: We want <ProductProvider> to have access to usres's data (currentUser/geoLocation)
+ * NOTE 01: We want <CategoriesProvider> to have access to usres's data (currentUser/geoLocation)
  * so we wrap it with <UserProvider>.
  */
 const root = ReactDOM.createRoot(document.getElementById("root"))
@@ -20,11 +20,11 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <UserProvider>
-        <ProductsProvider>
+        <CategoriesProvider>
           <CartProvider>
             <App />
           </CartProvider>
-        </ProductsProvider>
+        </CategoriesProvider>
       </UserProvider>
     </BrowserRouter>
   </React.StrictMode>

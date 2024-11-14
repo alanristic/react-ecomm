@@ -18,6 +18,10 @@ import {
   doc, // create a reference to a document instance
   getDoc, // set data
   setDoc, // get data
+  collection, // create a reference to a collection instance
+  writeBatch, // batch writes
+  query, // query
+  getDocs, // get documents
 } from "firebase/firestore"
 
 // Your web app's Firebase configuration
@@ -53,6 +57,28 @@ const db = getFirestore()
 /**************
  * INTERFACE LAYER FUNCTIONS
  **************/
+
+/**
+ *
+ * @param {*} collectionKey // name of the collection (ie 'Users', 'Categories', 'Products')
+ * @param {*} objectsToAdd  // documents we want to add to the collection
+ * @returns
+ */
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  const collectionRef = collection(db, collectionKey) // it's created if it doesn't exist
+  const batch = writeBatch(db) // batch instance (ie one unit of committed writes)
+
+  objectsToAdd.forEach((obj) => {
+    const newDocRef = doc(collectionRef, obj.title.toLowerCase()) // create a new document reference
+    batch.set(newDocRef, obj) // to the newDocRef, set the obj values
+  })
+
+  await batch.commit()
+  console.log("batch.commit() done") // this is never reached
+}
 
 /**
  * Creates a user profile document in Firestore if it doesn't already exist.
@@ -92,6 +118,32 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 
   // if user exists, return the user document reference
   return userDocRef
+}
+
+/**
+ * Fetch categories and documents from Firestore.
+ *
+ * @returns {Promise<Array>} - A promise that resolves with an array of category documents.
+ */
+export const getCategoriesAndDocuments = async () => {
+  const collectionRef = collection(db, "categories")
+
+  const q = query(collectionRef)
+
+  const querySnapshot = await getDocs(q) // get all documents in the collection
+
+  // Rebuild the data structure to be an object with category names as keys and items(aka products) as values
+  const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+    const { title, items } = docSnapshot.data() // destructuring actual data from the document snapshot
+    acc[title.toLowerCase()] = items // so each catgegory key gets an array of items (ie 'hats': [...], 'jackets': [...])
+    return acc
+  }, {})
+
+  return categoryMap
+
+  // const collectionSnapshot = await collectionRef.get()
+  // const collectionData = collectionSnapshot.docs.map((doc) => doc.data())
+  // return collectionData
 }
 
 /**
