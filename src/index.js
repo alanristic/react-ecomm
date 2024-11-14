@@ -1,13 +1,32 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import "./index.scss"
+import { BrowserRouter } from "react-router-dom"
+
 import App from "./App"
+import { UserProvider } from "./utils/contexts/user.context"
+import { CategoriesProvider } from "./utils/contexts/categories.context"
+import { CartProvider } from "./utils/contexts/cart.context"
+
 import reportWebVitals from "./reportWebVitals"
 
+import "./index.scss"
+
+/**
+ * NOTE 01: We want <CategoriesProvider> to have access to usres's data (currentUser/geoLocation)
+ * so we wrap it with <UserProvider>.
+ */
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <UserProvider>
+        <CategoriesProvider>
+          <CartProvider>
+            <App />
+          </CartProvider>
+        </CategoriesProvider>
+      </UserProvider>
+    </BrowserRouter>
   </React.StrictMode>
 )
 
