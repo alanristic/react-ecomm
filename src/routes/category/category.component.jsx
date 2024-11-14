@@ -19,12 +19,15 @@ const Category = () => {
   }, [category, categoriesMap]) // only update once any of those two changes
 
   return (
-    <div className="category-container">
-      {products && // if products is not null (remember, we're using async fetch from Firebase)
-        products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-    </div>
+    <>
+      <h2 className="cateogry-title">{category.toUpperCase()}</h2>
+      <div className="category-container">
+        {products && // if products is not null (remember, we're using async fetch from Firebase)
+          products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+      </div>
+    </>
   )
 }
 
