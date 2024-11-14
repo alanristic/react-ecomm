@@ -10,7 +10,13 @@ import { CartContext } from "../../utils/contexts/cart.context"
 import { ReactComponent as CrwnLogo } from "../../assets/crown.svg"
 import { signOutUser } from "../../utils/firebase/firebase.utils"
 
-import "./navigation.styles.scss"
+// import "./navigation.styles.scss"
+import {
+  NavigationContainer,
+  LogoContainer,
+  NavLinks,
+  NavLink,
+} from "./navigation.styles"
 
 const Navigation = () => {
   const { currentUser } = useContext(UserContext) // here we want the VALUE not setter
@@ -18,27 +24,27 @@ const Navigation = () => {
 
   return (
     <Fragment>
-      <div className="navigation">
-        <Link className="logo-container" to="/">
+      <NavigationContainer>
+        <LogoContainer to="/">
           <CrwnLogo className="logo" />
-        </Link>
-        <div className="nav-links-container">
-          <Link className="nav-link" to="/shop">
+        </LogoContainer>
+        <NavLinks>
+          <NavLink className="nav-link" to="/shop">
             SHOP
-          </Link>
+          </NavLink>
           {currentUser ? (
-            <Link className="nav-link" to="/auth" onClick={signOutUser}>
+            <NavLink className="nav-link" to="/auth" onClick={signOutUser}>
               SIGN OUT
-            </Link>
+            </NavLink>
           ) : (
-            <Link className="nav-link" to="/auth">
+            <NavLink className="nav-link" to="/auth">
               SIGN IN
-            </Link>
+            </NavLink>
           )}
           <CartIcon />
-        </div>
+        </NavLinks>
         {isCartOpen && <CartDropdown />}
-      </div>
+      </NavigationContainer>
       <Outlet />
     </Fragment>
   )
