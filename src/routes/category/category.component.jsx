@@ -14,8 +14,8 @@ const Category = () => {
 
   useEffect(() => {
     setProducts(categoriesMap[category])
-    console.log("DBG: category....", category)
-    console.log("DBG: useEffect()....", categoriesMap)
+    // console.log("DBG: category....", category)
+    // console.log("DBG: useEffect()....", categoriesMap)
   }, [category, categoriesMap]) // only update once any of those two changes
 
   return (
