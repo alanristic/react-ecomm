@@ -10,6 +10,11 @@ export const BUTTON_TYPE_CLASSES = {
   inverted: "inverted",
 }
 
+/**
+ * Strategy (Pattern) function to get the button component based on the buttonType.
+ * @param {*} buttonType
+ * @returns
+ */
 const getButton = (buttonType = BUTTON_TYPE_CLASSES.base) =>
   ({
     [BUTTON_TYPE_CLASSES.base]: BaseButton,
