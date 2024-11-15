@@ -16,4 +16,5 @@ Feel free to download correct version you'd like to explore/inspect.
 - [x] v1.0.0 - Core React (only used core react concepts/libd)
 - [x] v1.1.0 - Refactored to use Reducers instead of Context API
 - [ ] v2.0.0 - Refactored from React Core to Redux
+- [ ] v2.1.0 - Refactored from Redux to Redux Toolkit
 - [ ] v2.1.0 - Integrated TypeScript
