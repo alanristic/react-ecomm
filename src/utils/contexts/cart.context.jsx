@@ -107,7 +107,7 @@ const cartReducer = (state, action) => {
     case CART_ACTION_TYPES.TOGGLE_CART:
       return {
         ...state,
-        isCartOpen: payload,
+        isCartOpen: payload.isCartOpen,
       }
     default:
       throw new Error(`Unsupported action type: ${type} in cartReducer`)
@@ -150,12 +150,12 @@ export const CartProvider = ({ children }) => {
     updateCartItemsReducer(newCartItems) // pass the new cart items to the reducer
   }
 
-  const toggleCart = () => {
+  const toggleCart = (bool) => {
     // Dispacth reducer with new cart items, total and count
     dispatch({
       type: CART_ACTION_TYPES.TOGGLE_CART,
       payload: {
-        isCartOpen: !isCartOpen,
+        isCartOpen: bool,
       },
     })
   }

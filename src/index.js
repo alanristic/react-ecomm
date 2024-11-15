@@ -5,7 +5,7 @@ import { Provider } from "react-redux"
 
 import App from "./App"
 // import { UserProvider } from "./utils/contexts/user.context"
-import { CategoriesProvider } from "./utils/contexts/categories.context"
+// import { CategoriesProvider } from "./utils/contexts/categories.context"
 import { CartProvider } from "./utils/contexts/cart.context"
 
 import { store } from "./store/store" // Redux store
@@ -24,11 +24,11 @@ root.render(
     <Provider store={store}>
       <BrowserRouter>
         {/* <UserProvider> */}
-        <CategoriesProvider>
-          <CartProvider>
-            <App />
-          </CartProvider>
-        </CategoriesProvider>
+        {/* <CategoriesProvider> */}
+        <CartProvider>
+          <App />
+        </CartProvider>
+        {/* </CategoriesProvider> */}
         {/* </UserProvider> */}
       </BrowserRouter>
     </Provider>

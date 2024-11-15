@@ -133,17 +133,17 @@ export const getCategoriesAndDocuments = async () => {
   const querySnapshot = await getDocs(q) // get all documents in the collection
 
   // Rebuild the data structure to be an object with category names as keys and items(aka products) as values
-  const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
-    const { title, items } = docSnapshot.data() // destructuring actual data from the document snapshot
-    acc[title.toLowerCase()] = items // so each catgegory key gets an array of items (ie 'hats': [...], 'jackets': [...])
-    return acc
-  }, {})
+  return querySnapshot.docs.map((docSnapshot) => {
+    return docSnapshot.data()
+  })
 
-  return categoryMap
+  // .reduce((acc, docSnapshot) => {
+  //   const { title, items } = docSnapshot.data() // destructuring actual data from the document snapshot
+  //   acc[title.toLowerCase()] = items // so each catgegory key gets an array of items (ie 'hats': [...], 'jackets': [...])
+  //   return acc
+  // }, {})
 
-  // const collectionSnapshot = await collectionRef.get()
-  // const collectionData = collectionSnapshot.docs.map((doc) => doc.data())
-  // return collectionData
+  // return categoryMap
 }
 
 /**
