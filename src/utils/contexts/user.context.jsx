@@ -56,22 +56,5 @@ export const UserProvider = ({ children }) => {
 
   const value = { currentUser, setCurrentUser }
 
-  // On mount, subscribe to auth changes (runs only once)
-  useEffect(() => {
-    const unsubscribe = onAuthStateChangedListener((user) => {
-      // console.log(user)
-
-      if (user) {
-        // try creating user in the database if it doesn't exist
-        // (fnc is safe to call multiple times for the same user as it checks if the user already exists in the database)
-        createUserProfileDocument(user)
-      }
-
-      setCurrentUser(user) // 'user' (if user signed in) OR 'null' (if user is signed out)
-    })
-
-    return unsubscribe // unsubscribe from the listener when the component unmounts
-  }, [])
-
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>
 }
