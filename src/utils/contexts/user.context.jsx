@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react"
+import { createContext, useEffect, useReducer } from "react"
 
 import {
   onAuthStateChangedListener,
@@ -9,6 +9,30 @@ export const UserContext = createContext({
   currentUser: null, // tells us if the user is signed in or not (if we do have don't have a user object)
   setCurrentUser: null, // a function that sets the currentUser
 })
+
+export const USER_ACTION_TYPES = {
+  SET_CURRENT_USER: "SET_CURRENT_USER",
+}
+
+const userReducer = (state, action) => {
+  console.log("dispatched() from userReducer")
+  console.log(action)
+  const { type, payload } = action
+
+  switch (type) {
+    case USER_ACTION_TYPES.SET_CURRENT_USER:
+      return {
+        ...state, // <<< I'm not modifying this in this case, but include it in the return anyway
+        currentUser: payload, // <<< I'm modifying this in this case
+      }
+    default:
+      throw new Error(`Unsupported action type: ${type} in userReducer`)
+  }
+}
+
+const INITIAL_STATE = {
+  currentUser: null,
+}
 
 /**
  * UserProvider component that provides the UserContext to its children.
@@ -22,13 +46,20 @@ export const UserContext = createContext({
  * @returns {JSX.Element} The UserContext.Provider component with children.
  */
 export const UserProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null)
+  // const [currentUser, setCurrentUser] = useState(null)
+  const [{ currentUser }, dispatch] = useReducer(userReducer, INITIAL_STATE)
+  console.log(currentUser)
+
+  const setCurrentUser = (user) => {
+    dispatch({ type: USER_ACTION_TYPES.SET_CURRENT_USER, payload: user })
+  }
+
   const value = { currentUser, setCurrentUser }
 
   // On mount, subscribe to auth changes (runs only once)
   useEffect(() => {
     const unsubscribe = onAuthStateChangedListener((user) => {
-      console.log(user)
+      // console.log(user)
 
       if (user) {
         // try creating user in the database if it doesn't exist

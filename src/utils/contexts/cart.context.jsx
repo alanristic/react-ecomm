@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react"
+import { createContext, useReducer } from "react"
 
 /**
  * Add/Increment logic for the cart items
@@ -87,6 +87,40 @@ export const CartContext = createContext({
   cartTotal: 0,
 })
 
+const CART_ACTION_TYPES = {
+  // ADD_ITEM: "ADD_ITEM",
+  // REMOVE_ITEM: "REMOVE_ITEM",
+  // CLEAR_ITEM: "CLEAR_ITEM",
+  SET_CART_ITEMS: "SET_CART_ITEMS", // <<< OK
+  TOGGLE_CART: "TOGGLE_CART",
+}
+
+const cartReducer = (state, action) => {
+  const { type, payload } = action
+
+  switch (type) {
+    case CART_ACTION_TYPES.SET_CART_ITEMS:
+      return {
+        ...state,
+        ...payload,
+      }
+    case CART_ACTION_TYPES.TOGGLE_CART:
+      return {
+        ...state,
+        isCartOpen: payload,
+      }
+    default:
+      throw new Error(`Unsupported action type: ${type} in cartReducer`)
+  }
+}
+
+const INITIAL_STATE = {
+  isCartOpen: false,
+  cartItems: [],
+  cartCount: 0,
+  cartTotal: 0,
+}
+
 /**
  * Context provider for the cart
  *
@@ -94,69 +128,77 @@ export const CartContext = createContext({
  * @returns {JSX.Element} The cart context provider with the provided children
  */
 export const CartProvider = ({ children }) => {
-  const [isCartOpen, setIsCartOpen] = useState(false)
-  const [cartItems, setCartItems] = useState([])
-  const [cartCount, setCartCount] = useState(0)
-  const [cartTotal, setCartTotal] = useState(0)
+  const [{ cartItems, isCartOpen, cartCount, cartTotal }, dispatch] =
+    useReducer(cartReducer, INITIAL_STATE)
 
-  useEffect(() => {
-    // Calculate the total number of items in the cart
-    const newCartCount = cartItems.reduce(
+  // ---------------------------------------------------------------------------
+  // 'Action-creator' functions for the cart: add, remove, clear and toggle
+  // ---------------------------------------------------------------------------
+
+  const addItemToCart = (productToAdd) => {
+    const newCartItems = addCartItems(cartItems, productToAdd)
+    updateCartItemsReducer(newCartItems) // pass the new cart items to the reducer
+  }
+
+  const removeItemFromCart = (productToRemove) => {
+    const newCartItems = removeCartItem(cartItems, productToRemove)
+    updateCartItemsReducer(newCartItems) // pass the new cart items to the reducer
+  }
+
+  const clearItemFromCart = (productToClear) => {
+    const newCartItems = clearCartItem(cartItems, productToClear)
+    updateCartItemsReducer(newCartItems) // pass the new cart items to the reducer
+  }
+
+  const toggleCart = () => {
+    // Dispacth reducer with new cart items, total and count
+    dispatch({
+      type: CART_ACTION_TYPES.TOGGLE_CART,
+      payload: {
+        isCartOpen: !isCartOpen,
+      },
+    })
+  }
+
+  // ---------------------------------------------------------------------------
+  // 'Context-setter' function for the cart: update cart items, total and count
+  // ---------------------------------------------------------------------------
+
+  // Joint function for updating cart items, total and count)
+  //  - we wrote it this way b/c we need to update all 3 values at once
+  const updateCartItemsReducer = (newCartItems) => {
+    // UPDATE quantity of products in cart
+    const newCartCount = newCartItems.reduce(
       (total, cartItem) => total + cartItem.quantity,
       0
     )
-    setCartCount(newCartCount) // set new cart count
-  }, [cartItems]) // runs every time when the 'cartItems' change
 
-  /**
-   * ReCount Cart Totla
-   */
-  useEffect(() => {
-    // Calculate the total number of items in the cart
-    const newCartTotal = cartItems.reduce(
+    // UPDATE total price of products in cart
+    const newCartTotal = newCartItems.reduce(
       (total, cartItem) => total + cartItem.quantity * cartItem.price,
       0
     )
-    setCartTotal(newCartTotal) // set new cart count
-  }, [cartItems]) // runs every time when the 'cartItems' change
 
-  /**
-   * Add product to the cart
-   *
-   * @param {*} productToAdd
-   */
-  const addItemToCart = (productToAdd) => {
-    setCartItems(addCartItems(cartItems, productToAdd))
+    // Dispacth reducer with new cart items, total and count
+    dispatch({
+      type: CART_ACTION_TYPES.SET_CART_ITEMS,
+      payload: {
+        cartItems: newCartItems,
+        cartTotal: newCartTotal,
+        cartCount: newCartCount,
+      },
+    })
   }
 
-  /**
-   * Remove product (quantitiy) from the cart
-   *
-   * @param {*} productToRemove
-   */
-  const removeItemFromCart = (productToRemove) => {
-    setCartItems(removeCartItem(cartItems, productToRemove))
-  }
-
-  /**
-   * Remove product from the cart (regardless of quantity)
-   *
-   * @param {*} productToClear
-   */
-  const clearItemFromCart = (productToClear) => {
-    setCartItems(clearCartItem(cartItems, productToClear))
-  }
-
-  // Exposing the values to the children components
   const value = {
-    isCartOpen,
-    setIsCartOpen,
-    cartItems,
+    isCartOpen: isCartOpen,
+    cartItems: cartItems,
+    cartCount: cartCount,
+    cartTotal: cartTotal,
+    setIsCartOpen: toggleCart,
     addItemToCart,
-    removeItemFromCart, // Add removeItemFromCart to the context value
+    removeItemFromCart,
     clearItemFromCart,
-    cartCount,
-    cartTotal,
   }
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

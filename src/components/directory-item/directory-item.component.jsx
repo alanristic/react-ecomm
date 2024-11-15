@@ -9,6 +9,7 @@ import {
 } from "./directory-item.styles.jsx"
 
 const DirectoryItem = ({ category }) => {
+  // console.log("Category object:", category)
   const { title, imageUrl, route } = category //descructure category
   const navigate = useNavigate()
 
@@ -18,7 +19,7 @@ const DirectoryItem = ({ category }) => {
 
   return (
     <DirectoryItemContainer onClick={onNavigateHandler}>
-      <BackgroundImage imageUrl={imageUrl} />
+      <BackgroundImage $imageUrl={imageUrl} />
       <Body>
         <h2>{title}</h2>
         <p>Shop Now!</p>
