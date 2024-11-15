@@ -11,7 +11,7 @@ It uses all the common React tools (ie After you clone the project to your local
 
 ## Versions
 
-Feel free to download correct version you'd like to explore/inspect
+Feel free to download correct version you'd like to explore/inspect.
 
 - [x] v1.0.0 - Core React (only used core react concepts/libd)
 - [x] v1.1.0 - Refactored to use Reducers instead of Context API
