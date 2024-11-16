@@ -8,7 +8,7 @@ import { loggerMiddleware } from "./middleware/logger" // our own implementation
 import { rootReducer } from "./root-reducer"
 
 // run logger only in development mode
-const middleWares = [process.env.NODE_ENV === "development" && logger].filter(
+const middleWares = [process.env.NODE_ENV !== "production" && logger].filter(
   Boolean // remove any falsy values (ie if we're in 'production' mode, middlleware will be an empty array)
 )
 // const middleWares = [loggerMiddleware]
