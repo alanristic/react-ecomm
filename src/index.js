@@ -2,13 +2,14 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import { BrowserRouter } from "react-router-dom"
 import { Provider } from "react-redux"
+import { PersistGate } from "redux-persist/integration/react"
 
 import App from "./App"
 // import { UserProvider } from "./utils/contexts/user.context"
 // import { CategoriesProvider } from "./utils/contexts/categories.context"
 // import { CartProvider } from "./utils/contexts/cart.context"
 
-import { store } from "./store/store" // Redux store
+import { store, persistor } from "./store/store" // Redux store
 
 import reportWebVitals from "./reportWebVitals"
 
@@ -22,15 +23,17 @@ const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        {/* <UserProvider> */}
-        {/* <CategoriesProvider> */}
-        {/* <CartProvider> */}
-        <App />
-        {/* </CartProvider> */}
-        {/* </CategoriesProvider> */}
-        {/* </UserProvider> */}
-      </BrowserRouter>
+      <PersistGate persistor={persistor} loading={null}>
+        <BrowserRouter>
+          {/* <UserProvider> */}
+          {/* <CategoriesProvider> */}
+          {/* <CartProvider> */}
+          <App />
+          {/* </CartProvider> */}
+          {/* </CategoriesProvider> */}
+          {/* </UserProvider> */}
+        </BrowserRouter>
+      </PersistGate>
     </Provider>
   </React.StrictMode>
 )
