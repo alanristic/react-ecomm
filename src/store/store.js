@@ -3,7 +3,7 @@ import { persistStore, persistReducer } from "redux-persist"
 import storage from "redux-persist/lib/storage" // local storage on browser
 
 import logger from "redux-logger"
-import { loggerMiddleware } from "./middleware/logger" // our own implementation of middleware logger
+// import { loggerMiddleware } from "./middleware/logger" // our own implementation of middleware logger
 
 import { rootReducer } from "./root-reducer"
 
@@ -11,7 +11,12 @@ import { rootReducer } from "./root-reducer"
 const middleWares = [process.env.NODE_ENV !== "production" && logger].filter(
   Boolean // remove any falsy values (ie if we're in 'production' mode, middlleware will be an empty array)
 )
-// const middleWares = [loggerMiddleware]
+
+const composeEnhancers =
+  (process.env.NODE_ENV !== "production" &&
+    window &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+  compose
 
 const persistConfig = {
   key: "root", // persist whole state at root level
@@ -25,7 +30,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer)
 export const store = createStore(
   persistedReducer,
   undefined,
-  compose(applyMiddleware(...middleWares)) //passing in multiple middlewares and applying them
+  composeEnhancers(applyMiddleware(...middleWares)) //passing in multiple middlewares and applying them
 )
 
 //
