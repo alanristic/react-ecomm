@@ -1,11 +1,14 @@
 import { compose, createStore, applyMiddleware } from "redux"
 import { persistStore, persistReducer } from "redux-persist"
 import storage from "redux-persist/lib/storage" // local storage on browser
+
 import logger from "redux-logger"
+import { loggerMiddleware } from "./middleware/logger" // our own implementation of middleware logger
 
 import { rootReducer } from "./root-reducer"
 
 const middleWares = [logger]
+// const middleWares = [loggerMiddleware]
 
 const persistConfig = {
   key: "root", // persist whole state at root level
