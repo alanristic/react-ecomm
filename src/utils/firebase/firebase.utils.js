@@ -130,6 +130,8 @@ export const getCategoriesAndDocuments = async () => {
 
   const q = query(collectionRef)
 
+  // await Promise.reject("Error fetching categories") // <<< testing error handling
+
   const querySnapshot = await getDocs(q) // get all documents in the collection
 
   // Rebuild the data structure to be an object with category names as keys and items(aka products) as values
