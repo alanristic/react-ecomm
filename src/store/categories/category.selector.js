@@ -16,3 +16,11 @@ export const selectCategoriesMap = createSelector(
       return acc
     }, {})
 )
+
+/**
+ * Determine if categories are loading
+ */
+export const selectIsCategoriesLoading = createSelector(
+  [selectCategoryReducer],
+  (categories) => categories.isLoading
+)

@@ -1,16 +1,35 @@
 import { compose, createStore, applyMiddleware } from "redux"
 import { persistStore, persistReducer } from "redux-persist"
 import storage from "redux-persist/lib/storage" // local storage on browser
+import { thunk } from "redux-thunk"
+
 import logger from "redux-logger"
+// import { loggerMiddleware } from "./middleware/logger" // our own implementation of middleware logger
 
 import { rootReducer } from "./root-reducer"
 
-const middleWares = [logger]
+// run logger only in development mode
+const middleWares = [
+  process.env.NODE_ENV !== "production" && logger,
+  thunk,
+].filter(
+  Boolean // remove any falsy values (ie if we're in 'production' mode, middlleware will be an empty array)
+)
 
+const composeEnhancers =
+  (process.env.NODE_ENV !== "production" &&
+    window &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+  compose
+
+/**
+ * Local storage persistency
+ */
 const persistConfig = {
   key: "root", // persist whole state at root level
   storage,
-  blacklist: ["user"], // we don't want to persist user as it's handled by firebase, and don't won't weird bugs
+  // blacklist: ["user"], // we don't want to persist user as it's handled by firebase, and don't won't weird bugs
+  whitelist: ["cart"], // we want to persist cart as it's a local state
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
@@ -19,7 +38,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer)
 export const store = createStore(
   persistedReducer,
   undefined,
-  compose(applyMiddleware(...middleWares)) //passing in multiple middlewares and applying them
+  composeEnhancers(applyMiddleware(...middleWares)) //passing in multiple middlewares and applying them
 )
 
 //

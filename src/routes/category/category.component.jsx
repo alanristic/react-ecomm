@@ -2,16 +2,21 @@ import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 
 import { useSelector } from "react-redux"
-import { selectCategoriesMap } from "../../store/categories/category.selector"
+import {
+  selectCategoriesMap,
+  selectIsCategoriesLoading,
+} from "../../store/categories/category.selector"
 
 import "./category.styles.scss"
 import ProductCard from "../../components/product-card/product-card.component"
+import Spinner from "../../components/spinner/spinner.component"
 
 const Category = () => {
   const { category } = useParams() // we can access the category parameter(s) from the URL
   // const { categoriesMap } = useContext(CategoriesContext)
 
   const categoriesMap = useSelector(selectCategoriesMap)
+  const isloading = useSelector(selectIsCategoriesLoading)
 
   const [products, setProducts] = useState(categoriesMap[category])
 
@@ -24,12 +29,16 @@ const Category = () => {
   return (
     <>
       <h2 className="cateogry-title">{category.toUpperCase()}</h2>
-      <div className="category-container">
-        {products && // if products is not null (remember, we're using async fetch from Firebase)
-          products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-      </div>
+      {isloading ? (
+        <Spinner />
+      ) : (
+        <div className="category-container">
+          {products && // if products is not null (remember, we're using async fetch from Firebase)
+            products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+        </div>
+      )}
     </>
   )
 }
